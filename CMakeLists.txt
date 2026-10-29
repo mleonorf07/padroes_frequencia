@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.12)
+project(paleta_simples CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(OpenCV REQUIRED)
+add_executable(paleta main.cpp)
+target_link_libraries(paleta ${OpenCV_LIBS})
+target_include_directories(paleta PRIVATE ${OpenCV_INCLUDE_DIRS})
