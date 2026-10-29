@@ -3,17 +3,18 @@
 #include <vector>
 #include <cmath>
 
-int main() {
-    // 1. Carregar a imagem (coloca o nome de uma imagem real na mesma pasta do projeto)
-    cv::Mat img = cv::imread("imagem.jpg");
+int main(int argc, char** argv) {
+    // 1. Carregar a imagem: por omissão "image.jpg", ou o nome passado na linha de comandos
+    //    Exemplo: ./build/paleta outra_foto.jpg
+    std::string nome = (argc > 1) ? argv[1] : "image.jpg";
+    cv::Mat img = cv::imread(nome);
 
     if (img.empty()) {
-        std::cout << "Erro: Nao foi possivel carregar a imagem!" << std::endl;
+        std::cout << "Erro: Nao foi possivel carregar a imagem '" << nome << "'!" << std::endl;
         return -1;
     }
 
     // 2. Definir a paleta fixa de cores (em formato BGR: Azul, Verde, Vermelho)
-    // Podes adicionar ou alterar as cores que quiseres aqui!
     std::vector<cv::Vec3b> palette = {
         { 0, 0, 0 },       // Preto
         { 255, 255, 255 }, // Branco
@@ -22,41 +23,39 @@ int main() {
         { 0, 255, 0 }      // Verde puro
     };
 
-    // 3. Percorrer cada linha e cada coluna (cada píxel) da imagem
+    // 3. Percorrer cada linha e cada coluna (cada pixel) da imagem
     for (int y = 0; y < img.rows; y++) {
         for (int x = 0; x < img.cols; x++) {
-            // Obter a referência para o píxel atual (canais BGR)
             cv::Vec3b& pixel = img.at<cv::Vec3b>(y, x);
 
             int bestIndex = 0;
             double minDistance = -1;
 
-            // 4. Comparar o píxel com cada cor da paleta para encontrar a mais próxima
+            // 4. Comparar o pixel com cada cor da paleta para encontrar a mais proxima
             for (size_t i = 0; i < palette.size(); i++) {
-                // Cálculo da distância euclidiana entre as cores
                 double b_diff = (double)pixel[0] - palette[i][0];
                 double g_diff = (double)pixel[1] - palette[i][1];
                 double r_diff = (double)pixel[2] - palette[i][2];
                 double distance = std::sqrt(b_diff * b_diff + g_diff * g_diff + r_diff * r_diff);
 
-                // Guardar a cor que tiver a menor distância
                 if (minDistance == -1 || distance < minDistance) {
                     minDistance = distance;
-                    bestIndex = i;
+                    bestIndex = (int)i;
                 }
             }
 
-            // 5. Substituir a cor do píxel pela cor escolhida da paleta
+            // 5. Substituir a cor do pixel pela cor escolhida da paleta
             pixel = palette[bestIndex];
         }
     }
 
-    // 6. Mostrar o resultado numa janela e guardar a imagem processada
+    // 6. Mostrar o resultado numa janela redimensionavel e guardar em PNG (sem perdas)
+    cv::namedWindow("Paleta Limitada - Ponto 1", cv::WINDOW_NORMAL);
     cv::imshow("Paleta Limitada - Ponto 1", img);
-    cv::imwrite("resultado_ponto1.jpg", img);
+    cv::imwrite("resultado_ponto1.png", img);
 
     std::cout << "Processamento concluido com sucesso! Pressiona qualquer tecla para fechar." << std::endl;
-    cv::waitKey(0); // Mantém a janela aberta até premir uma tecla
+    cv::waitKey(0);
 
     return 0;
 }
