@@ -1,0 +1,9 @@
+; Paleta escolhida pelo o grupo --paleta: uma cor por linha, "#RRGGBB nome"
+#000000 preto
+#FFFFFF branco
+#FF0000 vermelho
+#00FF00 verde
+#0000FF azul
+#FFFF00 amarelo
+#00FFFF ciano
+#FF00FF magenta
